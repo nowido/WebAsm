@@ -1,4 +1,5 @@
 <html>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="test.js"></script>
     <script>
 
@@ -6,51 +7,61 @@
         {
             return a + 20;
         }
-
-        function jsmcpi(n)
+        
+        $(() => 
         {
-            var count = 0;
-
-            for(var i = 0; i < n; ++i)
+            function jsmcpi(n)
             {
-                var x = Math.random();
-                var y = Math.random();
+                var count = 0;
 
-                if(x * x + y * y <= 1.0)
+                for(var i = 0; i < n; ++i)
                 {
-                    ++count;
+                    var x = Math.random();
+                    var y = Math.random();
+
+                    if(x * x + y * y <= 1.0)
+                    {
+                        ++count;
+                    }
                 }
+
+                return 4.0 * count / n;
+            }
+            
+            function doWork()
+            {
+                //var res = Module.ccall('myfunc', 'number', ['number'], [34]);
+
+                //var res = Module._myfunc(36);
+
+                var N = 100000000;
+
+                var t1 = Date.now();            
+                var res = Module._mcpi(N, 123);
+                var t2 = Date.now();
+
+                var info = res + ', ' + (t2 - t1) + ' ms';
+                console.log(info);
+                print(info);
+
+                t1 = Date.now();
+                res = jsmcpi(N);
+                t2 = Date.now();
+
+                info = res + ', ' + (t2 - t1) + ' ms';
+                console.log(info);            
+                print(info);
             }
 
-            return 4.0 * count / n;
-        }
-        
-        function main()
-        {
+            function print(info)
+            {
+                $('body').append('<p>' + info + '</p>');
+            }
+
             Module['onRuntimeInitialized'] = doWork;
-        }
+        });
 
-        function doWork()
-        {
-            //var res = Module.ccall('myfunc', 'number', ['number'], [34]);
-
-            //var res = Module._myfunc(36);
-
-            var N = 100000000;
-
-            var t1 = Date.now();            
-            var res = Module._mcpi(N, 123);
-            var t2 = Date.now();
-
-            console.log(res + ', ' + (t2 - t1) + ' ms');
-
-            t1 = Date.now();
-            res = jsmcpi(N);
-            t2 = Date.now();
-
-            console.log(res + ', ' + (t2 - t1) + ' ms');            
-        }
     </script>
-<body onload="main()">
+<body>
 </body>
 </html>
